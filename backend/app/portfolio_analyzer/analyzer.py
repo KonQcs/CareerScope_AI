@@ -1,3 +1,3 @@
-def normalize_portfolio_links(links: list[str]) -> list[str]:
-    """Placeholder for URL validation and platform-aware portfolio evidence extraction."""
-    return [link.strip() for link in links if link.strip()]
+from backend.app.portfolio_analyzer.base import analyze_portfolio_url, normalize_portfolio_links
+
+__all__ = ["analyze_portfolio_url", "normalize_portfolio_links"]

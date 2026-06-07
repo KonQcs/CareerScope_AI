@@ -5,32 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c4fd6661-9f54-4f26-a54e-e495262fe090" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/api/routes.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/job_collector/sample_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/job_collector/sample_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/matching/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/matching/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/models/candidate.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/models/candidate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/models/job.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/models/job.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/models/match.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/models/match.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/schemas/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/schemas/match.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/schemas/match.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/skill_extraction/taxonomy.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/skill_extraction/taxonomy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/tests/test_cv_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/tests/test_cv_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/tests/test_database_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/tests/test_database_models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/tests/test_health.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/tests/test_health.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/tests/test_sample_job_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/tests/test_sample_job_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/architecture.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/architecture.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/data_model.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/data_model.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/roadmap.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/streamlit_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/streamlit_app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/import_sample_jobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/import_sample_jobs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/api/routes/portfolio.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/api/routes/portfolio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/portfolio_analyzer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/portfolio_analyzer/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/portfolio_analyzer/analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/portfolio_analyzer/analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +59,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1780857310543</updated>
-      <workItem from="1780857311543" duration="4941000" />
+      <workItem from="1780857311543" duration="6358000" />
     </task>
     <servers />
   </component>
