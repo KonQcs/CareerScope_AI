@@ -2,12 +2,14 @@ name: CI
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main", "master"]
   pull_request:
+    branches: ["main", "master"]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     env:
       PYTHONPATH: .
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
