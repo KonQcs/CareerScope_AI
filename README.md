@@ -1,6 +1,6 @@
 # CareerScope AI — CV, Portfolio & Job-Market Matching Platform
 
-[![CI](https://github.com/OWNER/REPOSITORY/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPOSITORY/actions/workflows/ci.yml)
+[![CI](https://github.com/KonQcs/CareerScope_AI/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/KonQcs/CareerScope_AI/actions/workflows/ci.yml)
 
 CareerScope AI analyzes a candidate's CV and portfolio, maps skills to target roles, compares
 them against job-market demand, identifies missing skills, and recommends matching jobs with
