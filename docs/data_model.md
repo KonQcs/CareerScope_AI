@@ -47,7 +47,8 @@ Stores project-level evidence from portfolio links or CV entries.
 
 ## JobPosting And JobSkill
 
-`JobPosting` stores normalized role data from sample files or future collectors. `JobSkill` stores extracted requirements for each posting, including skill importance and supporting requirement text.
+`JobPosting` stores normalized role data from sample files or future collectors. `JobSkill` stores
+extracted requirements for each posting, including skill importance and supporting requirement text.
 
 ## MatchResult
 
@@ -68,4 +69,5 @@ Stores explainable candidate-to-job scoring.
 
 ## Storage Approach
 
-The MVP uses SQLite in `careerscope.db`. Raw uploaded or collected files should stay in `data/raw` during local development and should not be committed.
+The MVP uses SQLite in `data/careerscope.db`. Raw uploaded or collected files should stay in
+`data/raw` during local development and should not be committed.

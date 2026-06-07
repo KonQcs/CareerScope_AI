@@ -8,6 +8,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: .
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
 
     steps:
       - name: Check out repository
@@ -24,7 +27,11 @@ jobs:
           python -m pip install -r requirements.txt
 
       - name: Lint
-        run: ruff check .
+        run: python -m ruff check .
 
       - name: Test
-        run: pytest
+        run: python -m pytest
+
+      - name: Type check
+        continue-on-error: true
+        run: python -m mypy backend frontend scripts

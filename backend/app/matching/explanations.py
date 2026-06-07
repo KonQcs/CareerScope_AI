@@ -15,9 +15,7 @@ def generate_match_explanation(
     company = read_value(job, "company", "the company")
     target_title = read_value(candidate_profile, "target_job_title", "the target role")
 
-    parts = [
-        f"{title} at {company} was compared with the candidate's target role: {target_title}."
-    ]
+    parts = [f"{title} at {company} was compared with the candidate's target role: {target_title}."]
 
     if matching_skills:
         parts.append(f"Matching skills: {_format_skill_list(matching_skills)}.")

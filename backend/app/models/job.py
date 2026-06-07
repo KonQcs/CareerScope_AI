@@ -1,9 +1,15 @@
-from datetime import date, datetime, timezone
+from __future__ import annotations
+
+from datetime import UTC, date, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Date, DateTime, Float, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.db.base import Base
+
+if TYPE_CHECKING:
+    from backend.app.models.match import MatchResult
 
 
 class JobPosting(Base):
@@ -26,14 +32,14 @@ class JobPosting(Base):
     date_posted: Mapped[date | None] = mapped_column(Date, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
-    skills: Mapped[list["JobSkill"]] = relationship(
+    skills: Mapped[list[JobSkill]] = relationship(
         back_populates="job",
         cascade="all, delete-orphan",
     )
-    match_results: Mapped[list["MatchResult"]] = relationship(
+    match_results: Mapped[list[MatchResult]] = relationship(
         back_populates="job",
         cascade="all, delete-orphan",
     )
@@ -53,4 +59,4 @@ class JobSkill(Base):
     importance: Mapped[str | None] = mapped_column(String(80), nullable=True)
     evidence_text: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    job: Mapped["JobPosting"] = relationship(back_populates="skills")
+    job: Mapped[JobPosting] = relationship(back_populates="skills")

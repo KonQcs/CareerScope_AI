@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      APP_NAME: ${APP_NAME:-CareerScope AI}
+      ENVIRONMENT: ${ENVIRONMENT:-docker}
+      DATABASE_URL: ${DOCKER_DATABASE_URL:-sqlite:///./data/careerscope.db}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    environment:
+      APP_NAME: ${APP_NAME:-CareerScope AI}
+      ENVIRONMENT: ${ENVIRONMENT:-docker}
+      STREAMLIT_API_BASE_URL: ${DOCKER_STREAMLIT_API_BASE_URL:-http://backend:8000}
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend

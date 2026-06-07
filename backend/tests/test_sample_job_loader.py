@@ -1,6 +1,3 @@
-from sqlalchemy import create_engine, func, select
-from sqlalchemy.orm import Session
-
 from backend.app import models as _models  # noqa: F401
 from backend.app.db.base import Base
 from backend.app.job_collector.sample_loader import (
@@ -9,6 +6,8 @@ from backend.app.job_collector.sample_loader import (
     load_sample_jobs,
 )
 from backend.app.models.job import JobPosting, JobSkill
+from sqlalchemy import create_engine, func, select
+from sqlalchemy.orm import Session
 
 
 def test_sample_jobs_load_correctly() -> None:

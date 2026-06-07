@@ -1,5 +1,5 @@
-from datetime import date
 import json
+from datetime import date
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -33,8 +33,7 @@ def load_sample_jobs() -> list[dict[str, Any]]:
 
 def extract_skills_for_job(job: dict[str, Any]) -> list[dict[str, str]]:
     searchable_text = " ".join(
-        str(job.get(key, "") or "")
-        for key in ("title", "description", "requirements_text")
+        str(job.get(key, "") or "") for key in ("title", "description", "requirements_text")
     )
     target_field = _infer_target_field(job)
     matches = find_skills_in_text(searchable_text, field=target_field)
@@ -111,8 +110,7 @@ def _infer_target_field(job: dict[str, Any]) -> str | None:
         return title_field
 
     haystack = " ".join(
-        str(job.get(key, "") or "")
-        for key in ("description", "requirements_text")
+        str(job.get(key, "") or "") for key in ("description", "requirements_text")
     ).casefold()
     return _field_from_text(haystack)
 

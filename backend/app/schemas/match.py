@@ -24,22 +24,37 @@ class MatchResultRead(BaseModel):
 
 
 class SkillGapReport(BaseModel):
-    candidate_id: int
-    job_id: int | None = None
+    target_field: str
     target_job_title: str
+    overall_readiness_score: float
     matching_skills: list[str] = Field(default_factory=list)
+    strong_skills: list[str] = Field(default_factory=list)
+    partial_skills: list[str] = Field(default_factory=list)
     missing_skills: list[str] = Field(default_factory=list)
-    weak_skills: list[str] = Field(default_factory=list)
-    summary: str
+    portfolio_evidenced_skills: list[str] = Field(default_factory=list)
+    cv_only_skills: list[str] = Field(default_factory=list)
+    recommended_projects: list[str] = Field(default_factory=list)
+    recommended_learning_topics: list[str] = Field(default_factory=list)
+    explanation: str
 
 
 class JobRecommendation(BaseModel):
     job_id: int
     title: str
     company: str
+    location: str | None = None
     overall_score: float
     match_label: str
     matching_skills: list[str] = Field(default_factory=list)
     missing_skills: list[str] = Field(default_factory=list)
     weak_skills: list[str] = Field(default_factory=list)
     explanation: str
+
+
+class SkillGapRequest(BaseModel):
+    target_field: str = Field(min_length=2, max_length=100)
+    target_job_title: str = Field(min_length=2, max_length=150)
+
+
+class JobRecommendationRequest(SkillGapRequest):
+    limit: int = Field(default=10, ge=1, le=50)

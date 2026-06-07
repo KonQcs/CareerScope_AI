@@ -8,7 +8,13 @@ from backend.app.schemas.candidate import (
     CandidateSkillRead,
 )
 from backend.app.schemas.job import JobPostingCreate, JobPostingRead, JobSkillRead
-from backend.app.schemas.match import JobRecommendation, MatchResultRead, SkillGapReport
+from backend.app.schemas.match import (
+    JobRecommendation,
+    JobRecommendationRequest,
+    MatchResultRead,
+    SkillGapReport,
+    SkillGapRequest,
+)
 
 __all__ = [
     "CandidateAnalysisPreview",
@@ -19,7 +25,9 @@ __all__ = [
     "JobPostingCreate",
     "JobPostingRead",
     "JobRecommendation",
+    "JobRecommendationRequest",
     "JobSkillRead",
     "MatchResultRead",
     "SkillGapReport",
+    "SkillGapRequest",
 ]

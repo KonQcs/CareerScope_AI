@@ -1,9 +1,16 @@
-from datetime import datetime, timezone
+from __future__ import annotations
 
-from sqlalchemy import DateTime, Float, ForeignKey, JSON, Text
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
+
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.db.base import Base
+
+if TYPE_CHECKING:
+    from backend.app.models.candidate import CandidateProfile
+    from backend.app.models.job import JobPosting
 
 
 class MatchResult(Base):
@@ -31,8 +38,8 @@ class MatchResult(Base):
     weak_skills: Mapped[list[str]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
-    candidate: Mapped["CandidateProfile"] = relationship(back_populates="match_results")
-    job: Mapped["JobPosting"] = relationship(back_populates="match_results")
+    candidate: Mapped[CandidateProfile] = relationship(back_populates="match_results")
+    job: Mapped[JobPosting] = relationship(back_populates="match_results")

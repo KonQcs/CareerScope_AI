@@ -1,44 +1,56 @@
 # Roadmap
 
-## Phase 1: Project Foundation
+CareerScope AI is currently a local MVP designed to demonstrate practical product engineering,
+explainable matching, and a credible path toward a production career-intelligence platform.
 
-- Create repository structure.
-- Add FastAPI backend skeleton.
-- Add Streamlit MVP form.
-- Add SQLite and SQLAlchemy setup.
-- Add configuration, linting, tests, and docs.
+## Completed MVP Foundation
 
-## Phase 2: Candidate Intake
+- FastAPI backend with modular routers.
+- Streamlit frontend workflow.
+- SQLite persistence with SQLAlchemy 2.x.
+- Candidate, skill, project, job, job-skill, and match-result models.
+- TXT/PDF CV parsing.
+- Skill taxonomy for Computer Science, Finance, and Logistics.
+- Sample job ingestion.
+- Target-role skill-gap reports.
+- Explainable candidate-to-job scoring.
+- Ranked job recommendations.
+- Docker Compose setup.
+- GitHub Actions CI configuration.
 
-- Store submitted candidate profiles.
-- Persist CV files in local development storage.
-- Extract text from TXT, PDF, and DOCX files.
-- Validate and normalize portfolio URLs.
+## Near-Term Improvements
 
-## Phase 3: Skill Extraction
+- Add dashboard charts for job-market demand by skill, seniority, location, and role family.
+- Improve portfolio analysis for GitHub repositories, Kaggle profiles, websites, and articles.
+- Add candidate history and saved analysis sessions.
+- Add richer filters for job recommendations.
+- Add screenshot assets for portfolio presentation in `docs/screenshots/`.
+- Replace placeholder CI badge URLs after publishing the GitHub repository.
 
-- Create initial skill taxonomies by career field.
-- Extract explicit skills from CV text.
-- Identify project evidence from portfolio links.
-- Classify skills as strong, weak, missing, or unknown.
+## Product Roadmap
 
-## Phase 4: Role Matching
+- Real job API integration, such as Adzuna, USAJOBS, or other job data providers.
+- ESCO/O*NET taxonomy integration for broader and more standardized skill mapping.
+- Authentication and user accounts.
+- PostgreSQL migration for multi-user persistence.
+- ML role classifier for mapping job titles to normalized role families.
+- Vector search for semantic CV-to-job and project-to-skill retrieval.
+- LLM-generated explanations on top of deterministic scoring outputs.
+- Deployed demo with hosted API and UI.
 
-- Define target-role requirement templates.
-- Compare candidate skills against target roles.
-- Generate explainable match summaries.
-- Add baseline scikit-learn similarity scoring.
+## Technical Hardening
 
-## Phase 5: Job Recommendations
+- Alembic migrations.
+- Better file storage policy for uploaded CVs.
+- Background jobs for portfolio and job ingestion.
+- Contract tests for API response schemas.
+- More robust frontend error and loading states.
+- Observability for scoring decisions and ingestion failures.
 
-- Add sample job postings for local matching.
-- Rank jobs by profile fit.
-- Explain why each job is or is not a good match.
-- Add optional semantic matching with sentence-transformers.
+## Known Limitations
 
-## Phase 6: Product Hardening
-
-- Add authentication and user profile history.
-- Improve UI workflows.
-- Add richer tests and CI checks.
-- Prepare deployment configuration.
+- MVP uses sample job data.
+- Matching is explainable but approximate.
+- No LinkedIn or Indeed scraping is included.
+- External URLs may fail due to network limits, rate limits, or unavailable pages.
+- Skill extraction is deterministic and taxonomy-based; it does not yet understand deeper context.

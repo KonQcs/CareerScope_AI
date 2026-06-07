@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from backend.app.services.cv_parser import (
     extract_candidate_skills_from_cv,
     extract_cv_text,

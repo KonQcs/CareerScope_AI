@@ -16,11 +16,13 @@ SECTION_HEADERS = {
     ),
     "certifications": ("certifications", "certificates", "licenses", "credentials"),
 }
-ALL_SECTION_HEADERS = {
-    alias
-    for aliases in SECTION_HEADERS.values()
-    for alias in aliases
-} | {"skills", "technical skills", "summary", "profile", "contact"}
+ALL_SECTION_HEADERS = {alias for aliases in SECTION_HEADERS.values() for alias in aliases} | {
+    "skills",
+    "technical skills",
+    "summary",
+    "profile",
+    "contact",
+}
 MAX_SNIPPETS_PER_SECTION = 4
 
 

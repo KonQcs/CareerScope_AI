@@ -1,9 +1,15 @@
-from datetime import datetime, timezone
+from __future__ import annotations
 
-from sqlalchemy import DateTime, Float, ForeignKey, JSON, String, Text
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
+
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.db.base import Base
+
+if TYPE_CHECKING:
+    from backend.app.models.match import MatchResult
 
 
 class CandidateProfile(Base):
@@ -19,18 +25,18 @@ class CandidateProfile(Base):
     remote_preference: Mapped[str | None] = mapped_column(String(80), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
-    skills: Mapped[list["CandidateSkill"]] = relationship(
+    skills: Mapped[list[CandidateSkill]] = relationship(
         back_populates="candidate",
         cascade="all, delete-orphan",
     )
-    projects: Mapped[list["CandidateProject"]] = relationship(
+    projects: Mapped[list[CandidateProject]] = relationship(
         back_populates="candidate",
         cascade="all, delete-orphan",
     )
-    match_results: Mapped[list["MatchResult"]] = relationship(
+    match_results: Mapped[list[MatchResult]] = relationship(
         back_populates="candidate",
         cascade="all, delete-orphan",
     )
@@ -52,10 +58,10 @@ class CandidateSkill(Base):
     evidence_strength: Mapped[float | None] = mapped_column(Float, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
-    candidate: Mapped["CandidateProfile"] = relationship(back_populates="skills")
+    candidate: Mapped[CandidateProfile] = relationship(back_populates="skills")
 
 
 class CandidateProject(Base):
@@ -73,7 +79,7 @@ class CandidateProject(Base):
     evidence_strength: Mapped[float | None] = mapped_column(Float, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
     )
 
-    candidate: Mapped["CandidateProfile"] = relationship(back_populates="projects")
+    candidate: Mapped[CandidateProfile] = relationship(back_populates="projects")

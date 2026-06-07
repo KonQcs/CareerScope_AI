@@ -1,7 +1,7 @@
-from functools import lru_cache
 import json
-from pathlib import Path
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 TAXONOMY_PATH = Path(__file__).resolve().parents[3] / "data" / "taxonomies" / "skills_taxonomy.json"

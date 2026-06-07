@@ -1,10 +1,9 @@
-from sqlalchemy import create_engine, inspect, select
-from sqlalchemy.orm import Session
-
 from backend.app import models as _models  # noqa: F401
 from backend.app.db.base import Base
 from backend.app.models.candidate import CandidateProfile
 from backend.app.models.job import JobPosting
+from sqlalchemy import create_engine, inspect, select
+from sqlalchemy.orm import Session
 
 
 def test_database_tables_can_be_created() -> None:
