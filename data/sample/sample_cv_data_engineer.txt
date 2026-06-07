@@ -1,0 +1,38 @@
+Alex Morgan
+alex.morgan@example.com
+Athens, Greece | linkedin.com/in/alexmorgan | github.com/alexmorgan
+
+Summary
+Data Engineer with 4 years of experience building batch and streaming data
+pipelines for analytics teams. Strong background in Python, SQL, Spark,
+PySpark, Docker, Airflow, PostgreSQL, and data warehousing.
+
+Technical Skills
+- Programming: Python, SQL, Java
+- Data Engineering: Spark, PySpark, Airflow, Kafka, ETL, ELT, data quality
+- Databases and Warehouses: PostgreSQL, Snowflake, BigQuery
+- DevOps and Cloud: Docker, Git, Linux, AWS, CI/CD, testing
+- Analytics: Pandas, NumPy, Power BI, Tableau, Excel
+
+Work Experience
+- Data Engineer, Northwind Analytics, 2022-2026
+  Built Spark and PySpark pipelines that processed daily sales and logistics
+  events. Designed PostgreSQL data models and automated data quality checks.
+- Junior BI Developer, Helios Retail, 2020-2022
+  Created SQL dashboards in Power BI and maintained Excel reporting models.
+
+Projects
+- Real-Time Order Pipeline
+  Developed a Kafka-to-Spark streaming project with Docker Compose and Python.
+  Added CI/CD checks and pytest coverage for transformation logic.
+- Warehouse Data Mart
+  Built dimensional data modeling layers in Snowflake and dbt for inventory
+  analytics and finance reporting.
+
+Education
+- BSc Computer Science, University of Piraeus, 2020
+- Coursework: databases, distributed systems, machine learning, statistics
+
+Certifications
+- AWS Certified Cloud Practitioner
+- Databricks Lakehouse Fundamentals

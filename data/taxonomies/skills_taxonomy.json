@@ -1,0 +1,407 @@
+{
+  "version": "0.1.0",
+  "fields": {
+    "Computer Science": [
+      {
+        "skill": "Python",
+        "category": "programming",
+        "synonyms": ["python", "py", "python 3", "python programming"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "SQL",
+        "category": "databases",
+        "synonyms": ["sql", "structured query language", "sql queries"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "Java",
+        "category": "programming",
+        "synonyms": ["java", "java se", "java ee"],
+        "related_fields": []
+      },
+      {
+        "skill": "JavaScript",
+        "category": "programming",
+        "synonyms": ["javascript", "js", "ecmascript", "node.js", "nodejs"],
+        "related_fields": []
+      },
+      {
+        "skill": "Git",
+        "category": "devops",
+        "synonyms": ["git", "github", "gitlab", "version control"],
+        "related_fields": []
+      },
+      {
+        "skill": "Docker",
+        "category": "devops",
+        "synonyms": ["docker", "containers", "containerization"],
+        "related_fields": []
+      },
+      {
+        "skill": "Kubernetes",
+        "category": "devops",
+        "synonyms": ["kubernetes", "k8s"],
+        "related_fields": []
+      },
+      {
+        "skill": "Linux",
+        "category": "devops",
+        "synonyms": ["linux", "unix", "shell scripting", "bash"],
+        "related_fields": []
+      },
+      {
+        "skill": "REST APIs",
+        "category": "programming",
+        "synonyms": ["rest apis", "rest api", "restful api", "restful services", "api development"],
+        "related_fields": []
+      },
+      {
+        "skill": "FastAPI",
+        "category": "programming",
+        "synonyms": ["fastapi", "fast api"],
+        "related_fields": []
+      },
+      {
+        "skill": "PostgreSQL",
+        "category": "databases",
+        "synonyms": ["postgresql", "postgres", "postgre sql"],
+        "related_fields": []
+      },
+      {
+        "skill": "MongoDB",
+        "category": "databases",
+        "synonyms": ["mongodb", "mongo db", "mongo"],
+        "related_fields": []
+      },
+      {
+        "skill": "Spark",
+        "category": "data_engineering",
+        "synonyms": ["spark", "apache spark"],
+        "related_fields": []
+      },
+      {
+        "skill": "PySpark",
+        "category": "data_engineering",
+        "synonyms": ["pyspark", "py spark"],
+        "related_fields": []
+      },
+      {
+        "skill": "Hadoop",
+        "category": "data_engineering",
+        "synonyms": ["hadoop", "apache hadoop", "hdfs"],
+        "related_fields": []
+      },
+      {
+        "skill": "Airflow",
+        "category": "data_engineering",
+        "synonyms": ["airflow", "apache airflow", "dag orchestration"],
+        "related_fields": []
+      },
+      {
+        "skill": "dbt",
+        "category": "data_engineering",
+        "synonyms": ["dbt", "data build tool"],
+        "related_fields": []
+      },
+      {
+        "skill": "Kafka",
+        "category": "data_engineering",
+        "synonyms": ["kafka", "apache kafka", "event streaming"],
+        "related_fields": []
+      },
+      {
+        "skill": "AWS",
+        "category": "cloud",
+        "synonyms": ["aws", "amazon web services"],
+        "related_fields": []
+      },
+      {
+        "skill": "Azure",
+        "category": "cloud",
+        "synonyms": ["azure", "microsoft azure"],
+        "related_fields": []
+      },
+      {
+        "skill": "GCP",
+        "category": "cloud",
+        "synonyms": ["gcp", "google cloud", "google cloud platform"],
+        "related_fields": []
+      },
+      {
+        "skill": "Snowflake",
+        "category": "data_engineering",
+        "synonyms": ["snowflake", "snowflake data cloud"],
+        "related_fields": []
+      },
+      {
+        "skill": "BigQuery",
+        "category": "data_engineering",
+        "synonyms": ["bigquery", "google bigquery", "big query"],
+        "related_fields": []
+      },
+      {
+        "skill": "Databricks",
+        "category": "data_engineering",
+        "synonyms": ["databricks", "azure databricks"],
+        "related_fields": []
+      },
+      {
+        "skill": "Pandas",
+        "category": "analytics",
+        "synonyms": ["pandas", "python pandas"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "NumPy",
+        "category": "analytics",
+        "synonyms": ["numpy", "num py"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "scikit-learn",
+        "category": "machine_learning",
+        "synonyms": ["scikit-learn", "sklearn", "scikit learn"],
+        "related_fields": []
+      },
+      {
+        "skill": "PyTorch",
+        "category": "machine_learning",
+        "synonyms": ["pytorch", "torch"],
+        "related_fields": []
+      },
+      {
+        "skill": "TensorFlow",
+        "category": "machine_learning",
+        "synonyms": ["tensorflow", "tensor flow"],
+        "related_fields": []
+      },
+      {
+        "skill": "MLflow",
+        "category": "machine_learning",
+        "synonyms": ["mlflow", "ml flow"],
+        "related_fields": []
+      },
+      {
+        "skill": "Power BI",
+        "category": "business_tools",
+        "synonyms": ["power bi", "powerbi", "microsoft power bi"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "Tableau",
+        "category": "business_tools",
+        "synonyms": ["tableau"],
+        "related_fields": ["Finance"]
+      },
+      {
+        "skill": "Excel",
+        "category": "business_tools",
+        "synonyms": ["excel", "microsoft excel", "spreadsheets", "spreadsheet modeling"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "data modeling",
+        "category": "data_engineering",
+        "synonyms": ["data modeling", "data modelling", "dimensional modeling", "dimensional modelling"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "data warehousing",
+        "category": "data_engineering",
+        "synonyms": ["data warehousing", "data warehouse", "warehouse modeling"],
+        "related_fields": []
+      },
+      {
+        "skill": "ETL",
+        "category": "data_engineering",
+        "synonyms": ["etl", "extract transform load", "extract-transform-load"],
+        "related_fields": []
+      },
+      {
+        "skill": "ELT",
+        "category": "data_engineering",
+        "synonyms": ["elt", "extract load transform", "extract-load-transform"],
+        "related_fields": []
+      },
+      {
+        "skill": "data quality",
+        "category": "data_engineering",
+        "synonyms": ["data quality", "data validation", "data cleansing", "data cleaning"],
+        "related_fields": ["Finance", "Logistics"]
+      },
+      {
+        "skill": "CI/CD",
+        "category": "devops",
+        "synonyms": ["ci/cd", "cicd", "continuous integration", "continuous delivery", "continuous deployment"],
+        "related_fields": []
+      },
+      {
+        "skill": "testing",
+        "category": "devops",
+        "synonyms": ["testing", "unit testing", "integration testing", "test automation", "pytest"],
+        "related_fields": []
+      }
+    ],
+    "Finance": [
+      {
+        "skill": "Excel",
+        "category": "business_tools",
+        "synonyms": ["excel", "microsoft excel", "spreadsheets", "spreadsheet modeling"],
+        "related_fields": ["Computer Science", "Logistics"]
+      },
+      {
+        "skill": "financial modeling",
+        "category": "finance",
+        "synonyms": ["financial modeling", "financial modelling", "financial models", "three statement model"],
+        "related_fields": []
+      },
+      {
+        "skill": "accounting",
+        "category": "finance",
+        "synonyms": ["accounting", "gaap", "ifrs", "bookkeeping"],
+        "related_fields": []
+      },
+      {
+        "skill": "forecasting",
+        "category": "analytics",
+        "synonyms": ["forecasting", "financial forecasting", "forecast models", "time series forecasting"],
+        "related_fields": ["Logistics"]
+      },
+      {
+        "skill": "risk analysis",
+        "category": "finance",
+        "synonyms": ["risk analysis", "risk assessment", "risk modeling", "risk modelling"],
+        "related_fields": []
+      },
+      {
+        "skill": "portfolio analysis",
+        "category": "finance",
+        "synonyms": ["portfolio analysis", "portfolio analytics", "investment portfolio analysis"],
+        "related_fields": []
+      },
+      {
+        "skill": "valuation",
+        "category": "finance",
+        "synonyms": ["valuation", "dcf", "discounted cash flow", "company valuation"],
+        "related_fields": []
+      },
+      {
+        "skill": "SQL",
+        "category": "databases",
+        "synonyms": ["sql", "structured query language", "sql queries"],
+        "related_fields": ["Computer Science", "Logistics"]
+      },
+      {
+        "skill": "Python",
+        "category": "programming",
+        "synonyms": ["python", "py", "python 3", "python programming"],
+        "related_fields": ["Computer Science", "Logistics"]
+      },
+      {
+        "skill": "Power BI",
+        "category": "business_tools",
+        "synonyms": ["power bi", "powerbi", "microsoft power bi"],
+        "related_fields": ["Computer Science", "Logistics"]
+      },
+      {
+        "skill": "Tableau",
+        "category": "business_tools",
+        "synonyms": ["tableau"],
+        "related_fields": ["Computer Science"]
+      },
+      {
+        "skill": "statistics",
+        "category": "analytics",
+        "synonyms": ["statistics", "statistical analysis", "regression analysis", "hypothesis testing"],
+        "related_fields": ["Computer Science", "Logistics"]
+      },
+      {
+        "skill": "budgeting",
+        "category": "finance",
+        "synonyms": ["budgeting", "budget planning", "budget management"],
+        "related_fields": []
+      },
+      {
+        "skill": "variance analysis",
+        "category": "finance",
+        "synonyms": ["variance analysis", "budget variance", "actuals vs budget", "forecast variance"],
+        "related_fields": []
+      }
+    ],
+    "Logistics": [
+      {
+        "skill": "supply chain management",
+        "category": "logistics",
+        "synonyms": ["supply chain management", "scm", "supply chain operations"],
+        "related_fields": []
+      },
+      {
+        "skill": "inventory optimization",
+        "category": "logistics",
+        "synonyms": ["inventory optimization", "inventory optimisation", "stock optimization", "stock optimisation"],
+        "related_fields": []
+      },
+      {
+        "skill": "forecasting",
+        "category": "analytics",
+        "synonyms": ["forecasting", "demand forecasting", "forecast models", "time series forecasting"],
+        "related_fields": ["Finance"]
+      },
+      {
+        "skill": "ERP",
+        "category": "business_tools",
+        "synonyms": ["erp", "enterprise resource planning", "sap", "oracle erp"],
+        "related_fields": ["Finance"]
+      },
+      {
+        "skill": "warehouse management",
+        "category": "logistics",
+        "synonyms": ["warehouse management", "wms", "warehouse management system"],
+        "related_fields": []
+      },
+      {
+        "skill": "route optimization",
+        "category": "logistics",
+        "synonyms": ["route optimization", "route optimisation", "vehicle routing", "routing optimization"],
+        "related_fields": []
+      },
+      {
+        "skill": "demand planning",
+        "category": "logistics",
+        "synonyms": ["demand planning", "demand planner", "sales and operations planning", "s&op"],
+        "related_fields": ["Finance"]
+      },
+      {
+        "skill": "SQL",
+        "category": "databases",
+        "synonyms": ["sql", "structured query language", "sql queries"],
+        "related_fields": ["Computer Science", "Finance"]
+      },
+      {
+        "skill": "Python",
+        "category": "programming",
+        "synonyms": ["python", "py", "python 3", "python programming"],
+        "related_fields": ["Computer Science", "Finance"]
+      },
+      {
+        "skill": "Excel",
+        "category": "business_tools",
+        "synonyms": ["excel", "microsoft excel", "spreadsheets", "spreadsheet modeling"],
+        "related_fields": ["Computer Science", "Finance"]
+      },
+      {
+        "skill": "Power BI",
+        "category": "business_tools",
+        "synonyms": ["power bi", "powerbi", "microsoft power bi"],
+        "related_fields": ["Computer Science", "Finance"]
+      },
+      {
+        "skill": "operations research",
+        "category": "analytics",
+        "synonyms": ["operations research", "operational research", "linear programming", "optimization modeling"],
+        "related_fields": ["Computer Science"]
+      }
+    ]
+  }
+}
