@@ -1,75 +1,209 @@
 # CareerScope AI — CV, Portfolio & Job-Market Matching Platform
 
 [![CI](https://github.com/KonQcs/CareerScope_AI/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/KonQcs/CareerScope_AI/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![FastAPI](https://img.shields.io/badge/API-FastAPI-009688.svg)
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-ff4b4b.svg)
+![SQLite](https://img.shields.io/badge/DB-SQLite-003b57.svg)
+![OpenAI](https://img.shields.io/badge/LLM-OpenAI_API-orange.svg)
 
-CareerScope AI analyzes a candidate's CV and portfolio, maps skills to target roles, compares
-them against job-market demand, identifies missing skills, and recommends matching jobs with
-explainable scores.
+CareerScope AI is an AI-assisted career intelligence platform that analyzes a candidate's CV and portfolio, extracts evidence-backed skills, compares them with job-market requirements, and recommends matching jobs with explainable scores.
 
-The project is built as a recruiter-friendly MVP that demonstrates backend API design, local data
-ingestion, deterministic NLP-style parsing, explainable scoring, Streamlit product UX, Dockerized
-deployment, and CI-ready Python engineering.
+The project is built as a practical MVP for students, graduates, and early-career candidates who want to understand what they already prove through their CV/projects and what they still need to build or study for a target role.
 
-## Features
+---
 
-- CV parsing for TXT and PDF files
-- GitHub and portfolio link analysis
-- taxonomy-backed skill extraction
-- target-role skill-gap analysis
-- explainable candidate-to-job matching
-- ranked job recommendation engine
-- job market analytics dashboard foundation
-- FastAPI backend
-- Streamlit frontend
-- SQLite local MVP storage with optional PostgreSQL support
-- Docker Compose deployment
-- tests and GitHub Actions CI
+## Introduction
+
+While I was in the final year of my Computer Science degree, I started looking for roles in the data field, such as **Data Engineer**, **Data Scientist**, and **ML/AI Engineer**. At that time, most of my GitHub portfolio consisted of academic projects, and I had one main question:
+
+> What else should I create, develop, or study in order to gain the correct skills that most job posts ask for?
+
+That question led me to create **CareerScope AI**. The goal is to help students and early-career candidates like me understand how their CV, GitHub repositories, and portfolio projects compare against real job requirements.
+
+Currently, the application does not run as a fully live job-market platform. It can demonstrate the full workflow using **sample jobs**, and it can also fetch external job postings from the **Adzuna API** when API credentials are configured. The matching logic is explainable and deterministic, while user-facing recommendation explanations can be generated through the **OpenAI API** using a configurable mini model such as `gpt-4o-mini`.
+
+---
+
+## What the App Does
+
+CareerScope AI allows a user to:
+
+1. Choose a target career field, such as Computer Science, Finance, Logistics, Marketing, Healthcare, or Engineering.
+2. Enter a desired job title, such as Data Engineer, Data Scientist, ML Engineer, Financial Analyst, or Supply Chain Analyst.
+3. Upload a CV in PDF or TXT format.
+4. Add portfolio links, including GitHub repositories, GitHub profiles, or personal websites.
+5. Extract skills from CV text and portfolio evidence.
+6. Compare candidate skills against target-role requirements.
+7. Identify strong skills, partial skills, and missing skills.
+8. Recommend jobs that match the candidate's experience.
+9. Explain why each job is recommended and which skills affect the score.
+
+---
+
+## Key Features
+
+- **CV parsing** for PDF and TXT files
+- **GitHub and portfolio analysis** using public repository metadata and README content
+- **Taxonomy-backed skill extraction** for Computer Science, Finance, and Logistics
+- **Skill-gap analysis** for a selected target field and job title
+- **Explainable candidate-to-job matching** with component-level scores
+- **Ranked job recommendation engine**
+- **Job market analytics dashboard**
+- **Adzuna API adapter** for optional external job fetching
+- **OpenAI-powered explanation layer** for clearer recommendation summaries
+- **FastAPI backend** with documented endpoints
+- **Streamlit frontend** for the MVP product experience
+- **SQLite local database** with optional PostgreSQL support
+- **Docker Compose deployment**
+- **pytest test suite and GitHub Actions CI**
+
+---
+
+## Demo Screenshots
+
+The screenshots below show a complete local demo of CareerScope AI using a CV, GitHub portfolio links, sample jobs, Adzuna-fetched jobs, skill-gap analysis, and ranked recommendations.
+
+### 1. Candidate creation, CV upload, and portfolio input
+
+![Candidate profile, CV upload, and portfolio input](docs/screenshots/01_create_candidate_cv_portfolio.png)
+
+### 2. GitHub portfolio analysis and detected project skills
+
+![Detected GitHub projects and skills](docs/screenshots/02_portfolio_projects_detected.png)
+
+### 3. External job fetching and analytics overview
+
+![External jobs and analytics overview](docs/screenshots/03_external_jobs_and_analytics_overview.png)
+
+### 4. Job market analytics charts
+
+![Job market analytics charts](docs/screenshots/04_job_market_analytics_charts.png)
+
+### 5. Skill-gap analysis
+
+![Skill gap analysis](docs/screenshots/05_skill_gap_analysis.png)
+
+### 6. Job recommendations
+
+![Top job recommendations](docs/screenshots/06_job_recommendations_top3.png)
+
+Additional recommendation screenshots are available in `docs/screenshots/`:
+
+- `07_job_recommendations_more_results.png`
+- `08_job_recommendations_final_result.png`
+
+---
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    A["Candidate Inputs"] --> B["CV Parser / Portfolio Analyzer"]
-    B --> C["Skill Extraction"]
-    C --> D["Matching Engine"]
-    D --> E["Job Recommendations"]
-    E --> F["Dashboard"]
+    A["User Inputs"] --> B["CV Parser"]
+    A --> C["Portfolio Analyzer"]
+    B --> D["Skill Extraction"]
+    C --> D
+    E["Sample Jobs / Adzuna API"] --> F["Job Collector"]
+    F --> G["Job Skill Extraction"]
+    D --> H["Candidate Profile"]
+    G --> I["Job Market Data"]
+    H --> J["Skill Gap Engine"]
+    I --> J
+    H --> K["Matching Engine"]
+    I --> K
+    J --> L["Recommended Skills & Projects"]
+    K --> M["Ranked Job Recommendations"]
+    M --> N["Optional OpenAI Explanation Layer"]
+    L --> O["Streamlit Dashboard"]
+    N --> O
 ```
+
+---
+
+## How Matching Works
+
+The project avoids being only an LLM wrapper. The core recommendation system uses structured and explainable scoring.
+
+```text
+overall_score =
+    0.40 * required_skill_score
+  + 0.20 * preferred_skill_score
+  + 0.15 * seniority_score
+  + 0.10 * domain_score
+  + 0.10 * portfolio_evidence_score
+  + 0.05 * location_score
+```
+
+The system separates:
+
+- **Strong skills**: skills found in both CV and portfolio/project evidence
+- **Partial skills**: skills found only in the CV or weak evidence
+- **Missing skills**: skills commonly requested by relevant job postings but absent from the candidate profile
+- **Portfolio-evidenced skills**: skills backed by GitHub repositories or project descriptions
+- **Recommended projects**: project ideas designed to close missing skill gaps
+
+The OpenAI API layer is optional. It rewrites structured match results into clearer human-readable explanations, but it does not replace the deterministic scoring engine.
+
+---
+
+## Data Sources
+
+CareerScope AI currently supports:
+
+### Local sample data
+
+```text
+data/sample/sample_jobs.json
+```
+
+These allow the app to run without external credentials.
+
+### Adzuna API
+
+Add credentials to `.env`:
+
+```env
+ADZUNA_APP_ID=your_app_id
+ADZUNA_APP_KEY=your_app_key
+ADZUNA_COUNTRY=gb
+```
+
+Fetched jobs are normalized, deduplicated, enriched with extracted skills, and stored in the same database tables as sample jobs.
+
+### Candidate data
+
+Candidate data comes from:
+
+- uploaded CV files
+- GitHub repositories
+- portfolio URLs
+- target field and target job title preferences
+
+---
 
 ## Tech Stack
 
-- Python 3.11+
-- FastAPI
-- Streamlit
-- SQLite
-- PostgreSQL optional
-- SQLAlchemy 2.x
-- Pydantic v2
-- Pandas
-- scikit-learn
-- PyMuPDF
-- pytest
-- ruff
-- Docker Compose
+| Layer | Tools |
+|---|---|
+| Backend API | FastAPI |
+| Frontend | Streamlit |
+| Database | SQLite, optional PostgreSQL |
+| ORM | SQLAlchemy 2.x |
+| Schemas | Pydantic v2 |
+| CV parsing | PyMuPDF / text parsing |
+| Skill extraction | deterministic taxonomy matching |
+| Matching engine | rule-based explainable scoring |
+| Optional LLM explanations | OpenAI API, default `gpt-4o-mini` |
+| Testing | pytest |
+| Linting | ruff |
+| Deployment | Docker Compose |
+| CI | GitHub Actions |
 
-## Screenshots
-
-Screenshots are intended to live in:
-
-```text
-docs/screenshots/
-```
-
-Suggested portfolio screenshots:
-
-- `docs/screenshots/01_candidate_profile.png`
-- `docs/screenshots/02_cv_skills.png`
-- `docs/screenshots/03_skill_gap.png`
-- `docs/screenshots/04_job_recommendations.png`
+---
 
 ## API Examples
 
-Create a candidate:
+### Create a candidate
 
 ```bash
 curl -X POST http://localhost:8000/candidates \
@@ -79,33 +213,53 @@ curl -X POST http://localhost:8000/candidates \
     "email": "alex@example.com",
     "target_field": "Computer Science",
     "target_job_title": "Data Engineer",
-    "seniority_preference": "Mid",
-    "location_preference": "Athens",
-    "remote_preference": "Hybrid"
+    "seniority_preference": "Junior",
+    "location_preference": "Remote",
+    "remote_preference": "Any"
   }'
 ```
 
-Upload a CV:
+### Upload a CV
 
 ```bash
 curl -X POST http://localhost:8000/candidates/1/cv \
   -F "cv=@data/sample/sample_cv_data_engineer.txt"
 ```
 
-Analyze portfolio links:
+### Analyze portfolio links
 
 ```bash
 curl -X POST http://localhost:8000/candidates/1/portfolio \
   -H "Content-Type: application/json" \
   -d '{
     "urls": [
-      "https://github.com/example/data-pipeline",
-      "https://example.com/portfolio"
+      "https://github.com/KonQcs/CareerScope_AI",
+      "https://github.com/KonQcs/NY-Yellow-Taxi-Analytics-with-Apache-Spark-Hadoop"
     ]
   }'
 ```
 
-Run a skill-gap report:
+### Import sample jobs
+
+```bash
+curl -X POST http://localhost:8000/jobs/import-sample
+```
+
+### Fetch external jobs from Adzuna
+
+```bash
+curl -X POST http://localhost:8000/jobs/search-external \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "adzuna",
+    "query": "Data Engineer",
+    "location": "London",
+    "country": "gb",
+    "page": 1
+  }'
+```
+
+### Run a skill-gap report
 
 ```bash
 curl -X POST http://localhost:8000/matching/1/skill-gap \
@@ -116,7 +270,7 @@ curl -X POST http://localhost:8000/matching/1/skill-gap \
   }'
 ```
 
-Recommend jobs:
+### Recommend jobs
 
 ```bash
 curl -X POST http://localhost:8000/matching/1/recommend-jobs \
@@ -128,109 +282,48 @@ curl -X POST http://localhost:8000/matching/1/recommend-jobs \
   }'
 ```
 
-Fetch external jobs through a configured provider:
-
-```bash
-curl -X POST http://localhost:8000/jobs/search-external \
-  -H "Content-Type: application/json" \
-  -d '{
-    "provider": "adzuna",
-    "query": "Data Engineer",
-    "location": "Athens",
-    "country": "gb",
-    "page": 1
-  }'
-```
-
-## Job Provider Adapters
-
-CareerScope AI uses a provider interface for job-market data instead of hardcoding one API source.
-The offline MVP still imports `data/sample/sample_jobs.json`, while future or credentialed providers
-can implement `JobProvider` in `backend/app/job_collector/providers/`.
-
-Included providers:
-
-- `SampleJobProvider`: searches the bundled local sample jobs.
-- `AdzunaProvider`: optional real API adapter that normalizes Adzuna results into the internal
-  `JobPosting` shape.
-
-Real Adzuna API usage requires credentials. Add these to `.env`:
-
-```env
-ADZUNA_APP_ID=your_app_id
-ADZUNA_APP_KEY=your_app_key
-ADZUNA_COUNTRY=gb
-```
-
-If credentials are missing or an API request fails, the Adzuna adapter returns no jobs and records a
-provider error instead of crashing the app. Tests use mocks and do not call external job APIs.
-
-In Streamlit, use **Fetch jobs from Adzuna** in the job import section after adding credentials to
-`.env`. Fetched jobs are normalized, validated, deduplicated by `external_id`, enriched with
-taxonomy skills, and stored in the same jobs table as sample jobs.
-
-## Optional LLM Explanations
-
-The core matching and skill-gap logic remains deterministic. Optional LLM support only rewrites or
-summarizes structured match results that the existing engine already produced.
-
-Without an API key, CareerScope AI uses deterministic template explanations. To enable an
-OpenAI-compatible provider, configure:
-
-```env
-OPENAI_API_KEY=your_key
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_BASE_URL=https://api.openai.com/v1
-```
-
-When configured, `POST /matching/{candidate_id}/recommend-jobs` rewrites the explanations for the
-ranked recommendations returned to the frontend.
-
-Privacy boundary: the explanation service sends only whitelisted structured fields such as scores,
-matched skills, missing skills, job title, and company. It does not send raw private CV text or
-project evidence text unless a future feature explicitly opts into that behavior.
+---
 
 ## Example Output
 
-Sample skill-gap report:
+### Skill-gap report
 
 ```json
 {
   "target_field": "Computer Science",
   "target_job_title": "Data Engineer",
-  "overall_readiness_score": 72.5,
-  "strong_skills": ["Python", "SQL", "Docker"],
-  "partial_skills": ["Spark", "PostgreSQL"],
-  "missing_skills": ["Airflow", "dbt", "data quality", "Kafka"],
-  "portfolio_evidenced_skills": ["Python", "Docker"],
+  "overall_readiness_score": 51,
+  "strong_skills": ["Python", "SQL", "Spark", "Docker", "ELT", "data quality"],
+  "partial_skills": ["Excel", "Power BI"],
+  "missing_skills": ["AWS", "BigQuery", "data warehousing", "Databricks", "ETL", "Snowflake"],
   "recommended_projects": [
-    "Build an ELT pipeline with Airflow, dbt, PostgreSQL, Great Expectations, Docker, and a dashboard."
-  ],
-  "recommended_learning_topics": ["Airflow", "dbt", "data quality", "Kafka"],
-  "explanation": "Readiness for Data Engineer is 72/100 based on relevant job postings."
+    "Build an ELT pipeline with Airflow, dbt, PostgreSQL, Great Expectations, Docker, and a dashboard.",
+    "Build a streaming analytics pipeline with Kafka, Spark or PySpark, Databricks, and data quality checks."
+  ]
 }
 ```
 
-Sample job recommendation:
+### Job recommendation
 
 ```json
 {
   "title": "Data Engineer",
-  "company": "Northwind Analytics",
-  "location": "Athens",
-  "overall_score": 86.5,
-  "match_label": "strong",
-  "matching_skills": ["Python", "SQL", "Spark", "Docker"],
-  "missing_skills": ["Airflow"],
-  "explanation": "Matching skills and portfolio evidence are strong, but Airflow is a gap."
+  "company": "Example Technology Staffing",
+  "location": "Remote",
+  "overall_score": 79,
+  "matching_skills": ["Python", "SQL"],
+  "missing_skills": [],
+  "explanation": "This role matches the candidate's target role and includes Python and SQL. The score is reduced mainly by seniority and evidence-strength factors."
 }
 ```
 
+---
+
 ## Local Setup
 
-Create and activate a virtual environment:
-
 ```bash
+git clone https://github.com/KonQcs/CareerScope_AI.git
+cd CareerScope_AI
 python -m venv .venv
 ```
 
@@ -253,57 +346,22 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Copy environment defaults:
-
-```bash
-cp .env.example .env
-```
-
-Windows PowerShell:
+Create the environment file:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-## Database Modes
+For macOS/Linux:
 
-SQLite is the default local MVP database and needs no external service:
-
-```env
-DATABASE_URL=sqlite:///./data/careerscope.db
+```bash
+cp .env.example .env
 ```
 
-PostgreSQL is optional. For a local PostgreSQL server, set:
-
-```env
-DATABASE_URL=postgresql+psycopg://careerscope:careerscope@localhost:5432/careerscope
-```
-
-For Docker Compose PostgreSQL, the backend connects to the Compose service name:
-
-```env
-DATABASE_URL=postgresql+psycopg://careerscope:careerscope@postgres:5432/careerscope
-POSTGRES_DB=careerscope
-POSTGRES_USER=careerscope
-POSTGRES_PASSWORD=careerscope
-```
-
-After changing database mode, initialize tables and import sample jobs again:
+Initialize the database and import sample jobs:
 
 ```bash
 python scripts/init_db.py
-python scripts/import_sample_jobs.py
-```
-
-Initialize the database:
-
-```bash
-python scripts/init_db.py
-```
-
-Import sample jobs:
-
-```bash
 python scripts/import_sample_jobs.py
 ```
 
@@ -323,37 +381,55 @@ Open:
 
 ```text
 Backend API: http://localhost:8000
-API docs: http://localhost:8000/docs
-Streamlit UI: http://localhost:8501
+API docs:    http://localhost:8000/docs
+Streamlit:   http://localhost:8501
 ```
 
-## Docker Setup
+---
 
-Build and start both services:
+## Environment Variables
+
+SQLite is the default database:
+
+```env
+DATABASE_URL=sqlite:///./data/careerscope.db
+```
+
+Optional PostgreSQL mode:
+
+```env
+DATABASE_URL=postgresql+psycopg://careerscope:careerscope@localhost:5432/careerscope
+```
+
+Optional OpenAI explanation layer:
+
+```env
+OPENAI_API_KEY=your_key
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_BASE_URL=https://api.openai.com/v1
+```
+
+Optional Adzuna integration:
+
+```env
+ADZUNA_APP_ID=your_app_id
+ADZUNA_APP_KEY=your_app_key
+ADZUNA_COUNTRY=gb
+```
+
+---
+
+## Docker Setup
 
 ```bash
 make docker-build
 make docker-up
 ```
 
-This uses SQLite unless `DATABASE_URL` points elsewhere.
-
-To run Docker with PostgreSQL, set `DATABASE_URL` in `.env` to the Compose service URL shown above,
-then start with the optional profile:
-
-```bash
-docker compose --profile postgres up --build
-```
-
 Initialize the Docker database:
 
 ```bash
 docker compose exec backend python scripts/init_db.py
-```
-
-Import sample jobs into the Docker database:
-
-```bash
 docker compose exec backend python scripts/import_sample_jobs.py
 ```
 
@@ -369,18 +445,7 @@ Stop services:
 make docker-down
 ```
 
-Docker exposes:
-
-```text
-Backend API: http://localhost:8000
-Streamlit UI: http://localhost:8501
-```
-
-The Docker frontend calls the backend through the Compose service network at:
-
-```text
-http://backend:8000
-```
+---
 
 ## Development Commands
 
@@ -397,6 +462,8 @@ make docker-down
 make docker-logs
 ```
 
+---
+
 ## Project Structure
 
 ```text
@@ -404,6 +471,7 @@ CareerScope_AI/
 |-- backend/
 |   |-- app/
 |   |   |-- api/
+|   |   |-- core/
 |   |   |-- db/
 |   |   |-- job_collector/
 |   |   |-- matching/
@@ -426,25 +494,44 @@ CareerScope_AI/
 |-- scripts/
 |-- Dockerfile.backend
 |-- Dockerfile.frontend
-`-- docker-compose.yml
+|-- docker-compose.yml
+|-- requirements.txt
+|-- pyproject.toml
+`-- README.md
 ```
+
+---
 
 ## Roadmap
 
-- real job API integration
-- ESCO/O*NET taxonomy integration
-- authentication
-- PostgreSQL deployment hardening
-- ML role classifier
-- vector search
-- LLM-generated explanations
-- deployed demo
+- Add stronger support for real-time job-market ingestion
+- Integrate ESCO or O*NET occupation and skills taxonomies
+- Add authentication and saved candidate profiles
+- Improve GitHub project evidence scoring
+- Add vector search over job descriptions and portfolio projects
+- Add a trained role/seniority classifier
+- Improve cloud deployment support
+- Add a hosted public demo
+- Add more fields beyond Computer Science, Finance, and Logistics
+
+---
 
 ## Limitations
 
-- MVP uses sample job data.
-- Matching is explainable but approximate.
+- The MVP primarily demonstrates the workflow with sample jobs.
+- Adzuna integration requires valid API credentials.
+- Matching is explainable but approximate; it should support decision-making, not replace human judgment.
 - No LinkedIn or Indeed scraping is included.
-- External URLs may fail due to network limits, rate limits, or unavailable pages.
-- Optional LLM explanations can improve wording, but they must not invent skills, jobs, companies,
-  or evidence and should be treated as summaries of deterministic results.
+- External portfolio URLs may fail due to network limits, rate limits, or unavailable pages.
+- OpenAI-generated explanations are summaries of structured scoring results and should not be treated as independent evidence.
+- Raw private CV text is not sent to the optional LLM explanation layer by default.
+
+---
+
+## Why This Project Matters
+
+CareerScope AI was built from a real student problem: understanding how to move from academic projects to job-ready skills. It combines software engineering, data engineering, NLP-style skill extraction, explainable recommendation systems, API design, and product thinking into one portfolio project.
+
+The long-term goal is to help candidates answer a practical question:
+
+> Based on my CV and portfolio, which jobs fit me now, what am I missing, and what should I build next?
