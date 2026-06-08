@@ -1,6 +1,7 @@
 import os
 from typing import Any
 
+import pandas as pd
 import requests
 import streamlit as st
 from dotenv import load_dotenv
@@ -20,6 +21,19 @@ SENIORITY_OPTIONS = ["Internship", "Junior", "Mid", "Senior", "Any"]
 REMOTE_OPTIONS = ["Any", "Remote", "Hybrid", "On-site"]
 
 
+def _clear_candidate_outputs() -> None:
+    st.session_state["cv_analysis"] = None
+    st.session_state["portfolio_analysis"] = None
+    st.session_state["skill_gap_report"] = None
+    st.session_state["job_recommendations"] = []
+
+
+def _select_candidate(candidate_profile: dict[str, Any]) -> None:
+    _clear_candidate_outputs()
+    st.session_state["candidate_id"] = candidate_profile["id"]
+    st.session_state["candidate_profile"] = candidate_profile
+
+
 def main() -> None:
     st.set_page_config(page_title="CareerScope AI", layout="wide")
     _init_state()
@@ -31,7 +45,8 @@ def main() -> None:
     _render_candidate_profile(api_base_url, sidebar_state)
     _render_upload_cv(api_base_url)
     _render_portfolio(api_base_url)
-    _render_import_jobs(api_base_url)
+    _render_import_jobs(api_base_url, sidebar_state)
+    _render_job_market_analytics(api_base_url, sidebar_state)
     _render_skill_gap(api_base_url, sidebar_state)
     _render_job_recommendations(api_base_url, sidebar_state)
 
@@ -43,6 +58,8 @@ def _init_state() -> None:
         "cv_analysis": None,
         "portfolio_analysis": None,
         "sample_jobs_import": None,
+        "external_jobs_import": None,
+        "job_market_analytics": None,
         "skill_gap_report": None,
         "job_recommendations": [],
     }
@@ -60,11 +77,47 @@ def _render_sidebar() -> dict[str, str]:
         location_preference = st.text_input("Location preference", value="")
         remote_preference = st.selectbox("Remote preference", REMOTE_OPTIONS)
 
+        st.divider()
+        st.header("Candidate")
         candidate_id = st.session_state.get("candidate_id")
+        candidate_profile = st.session_state.get("candidate_profile")
         if candidate_id:
             st.success(f"Candidate ID: {candidate_id}")
+            if candidate_profile:
+                st.caption(
+                    f"{candidate_profile.get('full_name', 'Selected candidate')} "
+                    f"({candidate_profile.get('email', 'no email')})"
+                )
         else:
             st.info("Create a candidate profile to begin.")
+
+        existing_candidate_id = st.text_input(
+            "Use existing candidate ID",
+            value=str(candidate_id or ""),
+            placeholder="Example: 1",
+        )
+        load_col, clear_col = st.columns(2)
+        with load_col:
+            if st.button("Load", use_container_width=True):
+                try:
+                    selected_id = int(existing_candidate_id)
+                except ValueError:
+                    st.error("Enter a numeric candidate ID.")
+                else:
+                    data = _api_request(
+                        "GET",
+                        api_base_url.rstrip("/"),
+                        f"/candidates/{selected_id}",
+                    )
+                    if data:
+                        _select_candidate(data)
+                        st.success(f"Loaded candidate {data['id']}.")
+        with clear_col:
+            if st.button("Clear", use_container_width=True):
+                st.session_state["candidate_id"] = None
+                st.session_state["candidate_profile"] = None
+                _clear_candidate_outputs()
+                st.info("Cleared the selected candidate for this session.")
 
     return {
         "api_base_url": api_base_url,
@@ -103,8 +156,7 @@ def _render_candidate_profile(api_base_url: str, sidebar_state: dict[str, str]) 
         }
         data = _api_request("POST", api_base_url, "/candidates", json=payload)
         if data:
-            st.session_state["candidate_id"] = data["id"]
-            st.session_state["candidate_profile"] = data
+            _select_candidate(data)
             st.success("Candidate profile created.")
             st.json(data)
 
@@ -165,7 +217,7 @@ def _render_portfolio(api_base_url: str) -> None:
                 st.write(_format_list(project.get("detected_skills", [])) or "No skills detected")
 
 
-def _render_import_jobs(api_base_url: str) -> None:
+def _render_import_jobs(api_base_url: str, sidebar_state: dict[str, str]) -> None:
     st.header("4. Import Sample Jobs")
     if st.button("Import sample job data"):
         data = _api_request("POST", api_base_url, "/jobs/import-sample")
@@ -177,9 +229,108 @@ def _render_import_jobs(api_base_url: str) -> None:
         inserted_jobs = st.session_state["sample_jobs_import"]["inserted_jobs"]
         st.caption(f"Last import inserted {inserted_jobs} jobs.")
 
+    st.subheader("Fetch External Jobs")
+    left, middle, right = st.columns([2, 2, 1])
+    with left:
+        external_query = st.text_input(
+            "Search query",
+            value=sidebar_state["target_job_title"].strip() or "Data Engineer",
+        )
+    with middle:
+        external_location = st.text_input(
+            "Search location",
+            value=sidebar_state["location_preference"].strip(),
+        )
+    with right:
+        external_country = st.text_input("Country", value=os.getenv("ADZUNA_COUNTRY", "gb"))
+
+    if st.button("Fetch jobs from Adzuna", disabled=not external_query.strip()):
+        payload = {
+            "provider": "adzuna",
+            "query": external_query.strip(),
+            "location": external_location.strip() or None,
+            "country": external_country.strip().lower() or None,
+            "page": 1,
+        }
+        data = _api_request("POST", api_base_url, "/jobs/search-external", json=payload)
+        if data:
+            st.session_state["external_jobs_import"] = data
+            if data.get("error"):
+                st.warning(data["error"])
+            else:
+                st.success(f"Inserted {data['inserted_jobs']} external jobs.")
+
+    if st.session_state.get("external_jobs_import"):
+        result = st.session_state["external_jobs_import"]
+        st.caption(
+            "Last external fetch: "
+            f"{result.get('fetched_jobs', 0)} fetched, "
+            f"{result.get('inserted_jobs', 0)} inserted, "
+            f"{result.get('skipped_duplicates', 0)} duplicates."
+        )
+        if result.get("validation_issues"):
+            st.warning(f"{len(result['validation_issues'])} fetched job(s) were skipped.")
+
+
+def _render_job_market_analytics(api_base_url: str, sidebar_state: dict[str, str]) -> None:
+    st.header("5. Job Market Analytics")
+
+    if st.button("Refresh job market analytics"):
+        data = _api_request(
+            "GET",
+            api_base_url,
+            "/jobs/analytics",
+            params={"field": sidebar_state["target_field"]},
+        )
+        if data:
+            st.session_state["job_market_analytics"] = data
+
+    analytics = st.session_state.get("job_market_analytics")
+    if not analytics:
+        st.info("Import sample jobs, then refresh analytics.")
+        return
+
+    jobs_by_field = analytics.get("jobs_by_field", [])
+    top_skills = analytics.get("top_skills_overall", [])
+    salary_summary = analytics.get("salary_summary", [])
+    total_jobs = sum(int(row.get("count", 0)) for row in jobs_by_field)
+    top_skill = top_skills[0]["skill"] if top_skills else "None"
+    salary_rows = [row for row in salary_summary if row.get("field") != "Overall"]
+
+    metric_columns = st.columns(4)
+    metric_columns[0].metric("Jobs", total_jobs)
+    metric_columns[1].metric("Fields", len(jobs_by_field))
+    metric_columns[2].metric("Top skill", top_skill)
+    metric_columns[3].metric("Salary groups", len(salary_rows))
+
+    left, right = st.columns(2)
+    with left:
+        st.subheader("Jobs by field")
+        _render_bar_chart(jobs_by_field, "field")
+    with right:
+        st.subheader("Jobs by seniority")
+        _render_bar_chart(analytics.get("jobs_by_seniority", []), "seniority")
+
+    left, right = st.columns(2)
+    with left:
+        st.subheader("Jobs by remote type")
+        _render_bar_chart(analytics.get("jobs_by_remote_type", []), "remote_type")
+    with right:
+        st.subheader("Top companies")
+        _render_bar_chart(analytics.get("top_companies", []), "company")
+
+    st.subheader("Top skills overall")
+    _render_table(top_skills)
+
+    st.subheader(f"Top skills for {analytics.get('target_field', sidebar_state['target_field'])}")
+    _render_table(analytics.get("top_skills_by_target_field", []))
+
+    st.subheader("Salary summary")
+    _render_table(salary_summary)
+
 
 def _render_skill_gap(api_base_url: str, sidebar_state: dict[str, str]) -> None:
-    st.header("5. Skill Gap Analysis")
+    st.header("6. Skill Gap Analysis")
     candidate_id = st.session_state.get("candidate_id")
 
     if st.button("Run skill gap analysis", disabled=candidate_id is None):
@@ -223,7 +374,7 @@ def _render_skill_gap(api_base_url: str, sidebar_state: dict[str, str]) -> None:
 
 
 def _render_job_recommendations(api_base_url: str, sidebar_state: dict[str, str]) -> None:
-    st.header("6. Job Recommendations")
+    st.header("7. Job Recommendations")
     candidate_id = st.session_state.get("candidate_id")
 
     if st.button("Recommend jobs", disabled=candidate_id is None):
@@ -304,6 +455,29 @@ def _render_skill_table(skills: list[dict[str, Any]]) -> None:
         for skill in skills
     ]
     st.dataframe(rows, use_container_width=True, hide_index=True)
+
+
+def _render_bar_chart(rows: list[dict[str, Any]], label_key: str) -> None:
+    if not rows:
+        st.info("No data yet.")
+        return
+
+    chart_rows = [
+        {
+            "label": str(row.get(label_key) or "Unknown"),
+            "count": int(row.get("count", 0)),
+        }
+        for row in rows
+    ]
+    frame = pd.DataFrame(chart_rows).set_index("label")
+    st.bar_chart(frame)
+
+
+def _render_table(rows: list[dict[str, Any]]) -> None:
+    if not rows:
+        st.info("No data yet.")
+        return
+    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 
 def _render_list(items: list[str]) -> None:

@@ -19,6 +19,8 @@ class JobPosting(Base):
     external_id: Mapped[str | None] = mapped_column(String(150), unique=True, nullable=True)
     title: Mapped[str] = mapped_column(String(180), index=True)
     company: Mapped[str] = mapped_column(String(180), index=True)
+    field: Mapped[str | None] = mapped_column(String(100), index=True, nullable=True)
+    job_family: Mapped[str | None] = mapped_column(String(120), index=True, nullable=True)
     location: Mapped[str | None] = mapped_column(String(180), nullable=True)
     country: Mapped[str | None] = mapped_column(String(100), nullable=True)
     remote_type: Mapped[str | None] = mapped_column(String(80), nullable=True)

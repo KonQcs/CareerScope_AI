@@ -6,7 +6,7 @@ services:
     environment:
       APP_NAME: ${APP_NAME:-CareerScope AI}
       ENVIRONMENT: ${ENVIRONMENT:-docker}
-      DATABASE_URL: ${DOCKER_DATABASE_URL:-sqlite:///./data/careerscope.db}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./data/careerscope.db}
     ports:
       - "8000:8000"
     volumes:
@@ -24,3 +24,24 @@ services:
       - "8501:8501"
     depends_on:
       - backend
+
+  postgres:
+    image: postgres:16-alpine
+    profiles:
+      - postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-careerscope}
+      POSTGRES_USER: ${POSTGRES_USER:-careerscope}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-careerscope}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:

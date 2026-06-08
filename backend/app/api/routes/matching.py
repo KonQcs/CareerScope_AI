@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from backend.app.db.init_db import sync_sqlite_schema
 from backend.app.db.session import get_db
 from backend.app.matching.service import calculate_job_match
 from backend.app.matching.skill_gap import find_relevant_jobs, generate_skill_gap_report
@@ -13,6 +14,7 @@ from backend.app.schemas.match import (
     SkillGapReport,
     SkillGapRequest,
 )
+from backend.app.services.explanation_generator import generate_user_friendly_explanation
 from backend.app.skill_extraction.taxonomy import find_skills_in_text
 
 router = APIRouter(prefix="/matching", tags=["matching"])
@@ -70,6 +72,8 @@ def recommend_jobs(
                 company=job.company,
                 location=job.location,
                 overall_score=match_result["overall_score"],
+                explainable_score=match_result["explainable_score"],
+                semantic_similarity_score=match_result["semantic_similarity_score"],
                 match_label=_match_label(match_result["overall_score"]),
                 matching_skills=match_result["matching_skills"],
                 missing_skills=match_result["missing_skills"],
@@ -78,8 +82,18 @@ def recommend_jobs(
             )
         )
 
-    return sorted(recommendations, key=lambda item: item.overall_score, reverse=True)[
-        : request.limit
+    ranked_recommendations = sorted(
+        recommendations,
+        key=lambda item: item.overall_score,
+        reverse=True,
+    )[: request.limit]
+    return [
+        recommendation.model_copy(
+            update={
+                "explanation": generate_user_friendly_explanation(recommendation),
+            }
+        )
+        for recommendation in ranked_recommendations
     ]
 
 
@@ -101,6 +115,7 @@ def _get_candidate(session: Session, candidate_id: int) -> CandidateProfile:
 
 
 def _load_jobs(session: Session) -> list[JobPosting]:
+    sync_sqlite_schema(session.get_bind())
     return list(session.scalars(select(JobPosting).options(selectinload(JobPosting.skills))).all())
 
 

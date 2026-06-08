@@ -10,6 +10,10 @@ from backend.app.portfolio_analyzer import (
     analyze_portfolio_url,
     normalize_portfolio_links,
 )
+from backend.app.services.data_quality import (
+    normalize_evidence_source,
+    validate_candidate_skill,
+)
 from backend.app.skill_extraction.taxonomy import get_skill_category
 
 router = APIRouter(prefix="/candidates", tags=["portfolio"])
@@ -49,18 +53,24 @@ def analyze_candidate_portfolio(
             session.add(project)
 
             for skill_name in analyzed_project.detected_skills:
-                if not _candidate_has_portfolio_skill(session, candidate.id, skill_name):
-                    session.add(
-                        CandidateSkill(
-                            candidate_id=candidate.id,
-                            skill_name=skill_name,
-                            normalized_skill_name=skill_name,
-                            category=get_skill_category(skill_name),
-                            evidence_source=analyzed_project.source,
-                            evidence_text=analyzed_project.evidence_text or analyzed_project.url,
-                            evidence_strength=analyzed_project.evidence_strength,
-                        )
+                evidence_source = normalize_evidence_source(analyzed_project.source)
+                skill_record = {
+                    "candidate_id": candidate.id,
+                    "skill_name": skill_name,
+                    "normalized_skill_name": skill_name,
+                    "category": get_skill_category(skill_name),
+                    "evidence_source": evidence_source,
+                    "evidence_text": analyzed_project.evidence_text or analyzed_project.url,
+                    "evidence_strength": analyzed_project.evidence_strength,
+                }
+                quality_issues = validate_candidate_skill(skill_record)
+                if quality_issues:
+                    raise HTTPException(
+                        status_code=422,
+                        detail=quality_issues,
                     )
+                if not _candidate_has_portfolio_skill(session, candidate.id, skill_name):
+                    session.add(CandidateSkill(**skill_record))
 
             projects.append(_project_response(analyzed_project))
 
@@ -77,7 +87,9 @@ def _candidate_has_portfolio_skill(
         select(CandidateSkill).where(
             CandidateSkill.candidate_id == candidate_id,
             CandidateSkill.normalized_skill_name == skill_name,
-            CandidateSkill.evidence_source.in_(("portfolio", "github", "website")),
+            CandidateSkill.evidence_source.in_(
+                ("portfolio", "github", "website", "Portfolio", "GitHub")
+            ),
         )
     )
     return existing_skill is not None

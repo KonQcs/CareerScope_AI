@@ -32,7 +32,7 @@ explainable matching, and a credible path toward a production career-intelligenc
 - Real job API integration, such as Adzuna, USAJOBS, or other job data providers.
 - ESCO/O*NET taxonomy integration for broader and more standardized skill mapping.
 - Authentication and user accounts.
-- PostgreSQL migration for multi-user persistence.
+- PostgreSQL deployment hardening, backups, migrations, and managed database configuration.
 - ML role classifier for mapping job titles to normalized role families.
 - Vector search for semantic CV-to-job and project-to-skill retrieval.
 - LLM-generated explanations on top of deterministic scoring outputs.

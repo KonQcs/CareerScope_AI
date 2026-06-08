@@ -8,6 +8,8 @@ class MatchResultRead(BaseModel):
     candidate_id: int
     job_id: int
     overall_score: float
+    explainable_score: float | None = None
+    semantic_similarity_score: float | None = None
     required_skill_score: float | None = None
     preferred_skill_score: float | None = None
     seniority_score: float | None = None
@@ -44,6 +46,8 @@ class JobRecommendation(BaseModel):
     company: str
     location: str | None = None
     overall_score: float
+    explainable_score: float | None = None
+    semantic_similarity_score: float | None = None
     match_label: str
     matching_skills: list[str] = Field(default_factory=list)
     missing_skills: list[str] = Field(default_factory=list)

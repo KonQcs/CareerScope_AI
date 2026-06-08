@@ -21,7 +21,7 @@ deployment, and CI-ready Python engineering.
 - job market analytics dashboard foundation
 - FastAPI backend
 - Streamlit frontend
-- SQLite local MVP storage
+- SQLite local MVP storage with optional PostgreSQL support
 - Docker Compose deployment
 - tests and GitHub Actions CI
 
@@ -42,6 +42,7 @@ flowchart LR
 - FastAPI
 - Streamlit
 - SQLite
+- PostgreSQL optional
 - SQLAlchemy 2.x
 - Pydantic v2
 - Pandas
@@ -127,6 +128,68 @@ curl -X POST http://localhost:8000/matching/1/recommend-jobs \
   }'
 ```
 
+Fetch external jobs through a configured provider:
+
+```bash
+curl -X POST http://localhost:8000/jobs/search-external \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "adzuna",
+    "query": "Data Engineer",
+    "location": "Athens",
+    "country": "gb",
+    "page": 1
+  }'
+```
+
+## Job Provider Adapters
+
+CareerScope AI uses a provider interface for job-market data instead of hardcoding one API source.
+The offline MVP still imports `data/sample/sample_jobs.json`, while future or credentialed providers
+can implement `JobProvider` in `backend/app/job_collector/providers/`.
+
+Included providers:
+
+- `SampleJobProvider`: searches the bundled local sample jobs.
+- `AdzunaProvider`: optional real API adapter that normalizes Adzuna results into the internal
+  `JobPosting` shape.
+
+Real Adzuna API usage requires credentials. Add these to `.env`:
+
+```env
+ADZUNA_APP_ID=your_app_id
+ADZUNA_APP_KEY=your_app_key
+ADZUNA_COUNTRY=gb
+```
+
+If credentials are missing or an API request fails, the Adzuna adapter returns no jobs and records a
+provider error instead of crashing the app. Tests use mocks and do not call external job APIs.
+
+In Streamlit, use **Fetch jobs from Adzuna** in the job import section after adding credentials to
+`.env`. Fetched jobs are normalized, validated, deduplicated by `external_id`, enriched with
+taxonomy skills, and stored in the same jobs table as sample jobs.
+
+## Optional LLM Explanations
+
+The core matching and skill-gap logic remains deterministic. Optional LLM support only rewrites or
+summarizes structured match results that the existing engine already produced.
+
+Without an API key, CareerScope AI uses deterministic template explanations. To enable an
+OpenAI-compatible provider, configure:
+
+```env
+OPENAI_API_KEY=your_key
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_BASE_URL=https://api.openai.com/v1
+```
+
+When configured, `POST /matching/{candidate_id}/recommend-jobs` rewrites the explanations for the
+ranked recommendations returned to the frontend.
+
+Privacy boundary: the explanation service sends only whitelisted structured fields such as scores,
+matched skills, missing skills, job title, and company. It does not send raw private CV text or
+project evidence text unless a future feature explicitly opts into that behavior.
+
 ## Example Output
 
 Sample skill-gap report:
@@ -202,6 +265,36 @@ Windows PowerShell:
 Copy-Item .env.example .env
 ```
 
+## Database Modes
+
+SQLite is the default local MVP database and needs no external service:
+
+```env
+DATABASE_URL=sqlite:///./data/careerscope.db
+```
+
+PostgreSQL is optional. For a local PostgreSQL server, set:
+
+```env
+DATABASE_URL=postgresql+psycopg://careerscope:careerscope@localhost:5432/careerscope
+```
+
+For Docker Compose PostgreSQL, the backend connects to the Compose service name:
+
+```env
+DATABASE_URL=postgresql+psycopg://careerscope:careerscope@postgres:5432/careerscope
+POSTGRES_DB=careerscope
+POSTGRES_USER=careerscope
+POSTGRES_PASSWORD=careerscope
+```
+
+After changing database mode, initialize tables and import sample jobs again:
+
+```bash
+python scripts/init_db.py
+python scripts/import_sample_jobs.py
+```
+
 Initialize the database:
 
 ```bash
@@ -241,6 +334,15 @@ Build and start both services:
 ```bash
 make docker-build
 make docker-up
+```
+
+This uses SQLite unless `DATABASE_URL` points elsewhere.
+
+To run Docker with PostgreSQL, set `DATABASE_URL` in `.env` to the Compose service URL shown above,
+then start with the optional profile:
+
+```bash
+docker compose --profile postgres up --build
 ```
 
 Initialize the Docker database:
@@ -332,7 +434,7 @@ CareerScope_AI/
 - real job API integration
 - ESCO/O*NET taxonomy integration
 - authentication
-- PostgreSQL migration
+- PostgreSQL deployment hardening
 - ML role classifier
 - vector search
 - LLM-generated explanations
@@ -344,3 +446,5 @@ CareerScope_AI/
 - Matching is explainable but approximate.
 - No LinkedIn or Indeed scraping is included.
 - External URLs may fail due to network limits, rate limits, or unavailable pages.
+- Optional LLM explanations can improve wording, but they must not invent skills, jobs, companies,
+  or evidence and should be treated as summaries of deterministic results.

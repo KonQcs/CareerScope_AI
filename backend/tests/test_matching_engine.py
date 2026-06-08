@@ -1,3 +1,4 @@
+import pytest
 from backend.app.matching.service import calculate_job_match
 
 
@@ -60,7 +61,15 @@ def test_perfect_skill_match_gives_high_score() -> None:
         job_skills=_job_skills("Python", "SQL", "Spark", "Docker"),
     )
 
-    assert result["overall_score"] >= 90
+    assert result["explainable_score"] >= 90
+    assert result["overall_score"] >= 80
+    assert result["semantic_similarity_score"] >= 0
+    assert result["overall_score"] == pytest.approx(
+        round(
+            (0.85 * result["explainable_score"]) + (0.15 * result["semantic_similarity_score"]),
+            2,
+        )
+    )
     assert result["required_skill_score"] == 100
     assert result["matching_skills"] == ["Docker", "Python", "Spark", "SQL"]
     assert result["missing_skills"] == []

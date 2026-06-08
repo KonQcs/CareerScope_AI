@@ -1,6 +1,7 @@
 from backend.app import models as _models  # noqa: F401
 from backend.app.db.base import Base
 from backend.app.job_collector.sample_loader import (
+    classify_job_posting_data,
     extract_skills_for_job,
     import_sample_jobs_to_db,
     load_sample_jobs,
@@ -23,6 +24,24 @@ def test_sample_jobs_load_correctly() -> None:
         "Supply Chain Analyst",
     }
     assert all(job["external_id"] for job in jobs)
+
+
+def test_sample_job_classification_is_added_when_missing() -> None:
+    classified_job = classify_job_posting_data(
+        {
+            "external_id": "example",
+            "title": "Junior Data Engineer",
+            "company": "Example",
+            "description": "Build Python SQL ETL pipelines.",
+            "requirements_text": "Airflow and dbt.",
+            "location": "Remote",
+        }
+    )
+
+    assert classified_job["field"] == "Computer Science"
+    assert classified_job["job_family"] == "Data Engineering"
+    assert classified_job["seniority"] == "Junior"
+    assert classified_job["remote_type"] == "Remote"
 
 
 def test_skills_are_extracted_from_job_requirements() -> None:
@@ -55,3 +74,12 @@ def test_duplicate_external_id_jobs_are_not_inserted_twice() -> None:
     assert job_count == 18
     assert job_skill_count is not None
     assert job_skill_count > 0
+
+    with Session(engine) as session:
+        stored_job = session.scalar(
+            select(JobPosting).where(JobPosting.external_id == "sample-data-engineer-001")
+        )
+
+    assert stored_job is not None
+    assert stored_job.field == "Computer Science"
+    assert stored_job.job_family == "Data Engineering"

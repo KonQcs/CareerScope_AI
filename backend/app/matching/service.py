@@ -11,6 +11,11 @@ from backend.app.matching.scoring import (
     score_seniority,
     split_job_skills_by_importance,
 )
+from backend.app.matching.semantic import (
+    build_candidate_profile_text,
+    build_job_text,
+    compute_text_similarity,
+)
 
 OVERALL_WEIGHTS = {
     "required_skill_score": 0.40,
@@ -71,7 +76,15 @@ def calculate_job_match(
             job,
         ),
     }
-    overall_score = _calculate_overall_score(component_scores)
+    explainable_score = _calculate_overall_score(component_scores)
+    semantic_similarity_score = compute_text_similarity(
+        build_candidate_profile_text(candidate_profile, candidate_skills, candidate_projects),
+        build_job_text(job, job_skills),
+    )
+    overall_score = _calculate_final_score(
+        explainable_score=explainable_score,
+        semantic_similarity_score=semantic_similarity_score,
+    )
     explanation = generate_match_explanation(
         candidate_profile=candidate_profile,
         job=job,
@@ -83,11 +96,16 @@ def calculate_job_match(
 
     return {
         "overall_score": overall_score,
+        "explainable_score": explainable_score,
+        "semantic_similarity_score": semantic_similarity_score,
         "matching_skills": matching_skills,
         "missing_skills": missing_skills,
         "weak_skills": weak_skills,
         "explanation": explanation,
-        "component_scores": component_scores,
+        "component_scores": {
+            **component_scores,
+            "semantic_similarity_score": semantic_similarity_score,
+        },
         **component_scores,
     }
 
@@ -113,6 +131,10 @@ def _calculate_overall_score(component_scores: dict[str, float]) -> float:
         sum(component_scores[name] * weight for name, weight in OVERALL_WEIGHTS.items()),
         2,
     )
+
+
+def _calculate_final_score(explainable_score: float, semantic_similarity_score: float) -> float:
+    return round((0.85 * explainable_score) + (0.15 * semantic_similarity_score), 2)
 
 
 def _merge_skill_lists(*skill_lists: list[str]) -> list[str]:

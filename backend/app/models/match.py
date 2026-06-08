@@ -26,6 +26,8 @@ class MatchResult(Base):
         index=True,
     )
     overall_score: Mapped[float] = mapped_column(Float)
+    explainable_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    semantic_similarity_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     required_skill_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     preferred_skill_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     seniority_score: Mapped[float | None] = mapped_column(Float, nullable=True)

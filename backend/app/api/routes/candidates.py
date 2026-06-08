@@ -13,6 +13,11 @@ from backend.app.services.cv_parser import (
     extract_cv_text,
     parse_candidate_profile_from_text,
 )
+from backend.app.services.data_quality import (
+    normalize_evidence_source,
+    validate_candidate_profile,
+    validate_candidate_skill,
+)
 
 router = APIRouter(prefix="/candidates", tags=["candidates"])
 UPLOAD_DIR = Path(__file__).resolve().parents[4] / "data" / "raw" / "uploads"
@@ -24,6 +29,13 @@ def create_candidate(
     candidate_data: CandidateProfileCreate,
     session: Session = Depends(get_db),
 ) -> CandidateProfile:
+    quality_issues = validate_candidate_profile(candidate_data.model_dump())
+    if quality_issues:
+        raise HTTPException(
+            status_code=422,
+            detail=quality_issues,
+        )
+
     existing_candidate = session.scalar(
         select(CandidateProfile).where(CandidateProfile.email == candidate_data.email)
     )
@@ -38,6 +50,14 @@ def create_candidate(
     session.commit()
     session.refresh(candidate)
     return candidate
+
+
+@router.get("/{candidate_id}", response_model=CandidateProfileRead)
+def read_candidate(
+    candidate_id: int,
+    session: Session = Depends(get_db),
+) -> CandidateProfile:
+    return _get_candidate(session, candidate_id)
 
 
 @router.post("/{candidate_id}/cv")
@@ -68,19 +88,28 @@ async def upload_candidate_cv(
     session.execute(
         delete(CandidateSkill).where(
             CandidateSkill.candidate_id == candidate.id,
-            CandidateSkill.evidence_source == "cv",
+            CandidateSkill.evidence_source.in_(("cv", "CV")),
         )
     )
     for skill in extracted_skills:
+        skill_record = {
+            "candidate_id": candidate.id,
+            "skill_name": skill["skill"],
+            "normalized_skill_name": skill["normalized_skill"],
+            "category": skill.get("category"),
+            "evidence_source": normalize_evidence_source("CV"),
+            "evidence_text": skill.get("evidence_snippet"),
+            "evidence_strength": 0.65,
+        }
+        quality_issues = validate_candidate_skill(skill_record)
+        if quality_issues:
+            raise HTTPException(
+                status_code=422,
+                detail=quality_issues,
+            )
         session.add(
             CandidateSkill(
-                candidate_id=candidate.id,
-                skill_name=skill["skill"],
-                normalized_skill_name=skill["normalized_skill"],
-                category=skill.get("category"),
-                evidence_source="cv",
-                evidence_text=skill.get("evidence_snippet"),
-                evidence_strength=0.65,
+                **skill_record,
             )
         )
     session.commit()

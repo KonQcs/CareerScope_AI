@@ -1,7 +1,7 @@
 # Architecture
 
 CareerScope AI is a local-first MVP for explainable career matching. It combines a FastAPI API,
-a Streamlit user interface, SQLite persistence, deterministic CV parsing, local sample job data,
+a Streamlit user interface, SQLAlchemy persistence, deterministic CV parsing, local sample job data,
 and a transparent scoring engine.
 
 ## System Flow
@@ -21,13 +21,17 @@ flowchart LR
   sample job import, skill-gap reports, and ranked job recommendations.
 - `backend/app/main.py`: FastAPI application factory, CORS setup, and router registration.
 - `backend/app/api/routes`: HTTP route modules for health, candidates, jobs, matching, and portfolio.
-- `backend/app/db`: SQLAlchemy base, session, and table initialization.
+- `backend/app/db`: SQLAlchemy base, session, table initialization, and database URL handling for
+  SQLite or PostgreSQL.
 - `backend/app/models`: SQLAlchemy models for candidate profiles, skills, projects, jobs, job skills,
   and match results.
 - `backend/app/schemas`: Pydantic v2 request and response models.
 - `backend/app/services/cv_parser.py`: deterministic TXT/PDF CV parsing and section extraction.
+- `backend/app/services/explanation_generator.py`: optional LLM rewrite layer for structured match
+  outputs, with deterministic fallback templates.
 - `backend/app/skill_extraction`: taxonomy-backed skill normalization and text matching.
-- `backend/app/job_collector`: sample job ingestion and job-skill extraction.
+- `backend/app/job_collector`: provider-based job ingestion, sample job loading, optional external
+  API adapters, classification, and job-skill extraction.
 - `backend/app/matching`: skill-gap analysis, component scoring, explanations, and recommendations.
 - `data/taxonomies`: local skill taxonomy for Computer Science, Finance, and Logistics.
 - `data/sample`: sample CV and job postings for offline development and CI.
@@ -42,6 +46,18 @@ flowchart LR
 6. The skill-gap engine compares candidate skills and project evidence against target-role demand.
 7. The matching engine computes explainable component scores for each relevant job.
 8. Streamlit displays readiness, missing skills, project suggestions, and ranked jobs.
+
+## Job Provider Boundary
+
+Job-market collection is organized around the `JobProvider` interface in
+`backend/app/job_collector/base.py`. Providers implement `search_jobs(...)` and
+`normalize_job(...)`, returning dictionaries compatible with the internal `JobPosting` shape.
+
+The bundled `SampleJobProvider` searches local sample data for offline development and CI. The
+optional `AdzunaProvider` reads `ADZUNA_APP_ID` and `ADZUNA_APP_KEY` from the environment and
+normalizes API responses when credentials are available. Missing credentials or request failures
+return no jobs instead of crashing the application. Tests use mocked HTTP responses and do not call
+real job APIs.
 
 ## Scoring Model
 
@@ -59,6 +75,30 @@ overall_score =
 
 This is intentionally explainable and deterministic for the MVP. Future versions can add embeddings,
 vector search, role classifiers, or LLM explanations without replacing the current baseline.
+
+Optional LLM explanations must only summarize structured matching outputs such as scores, matched
+skills, missing skills, role titles, and recommendations. Raw private CV text is not sent by the
+explanation service.
+
+## Persistence
+
+SQLite remains the default MVP database through:
+
+```text
+DATABASE_URL=sqlite:///./data/careerscope.db
+```
+
+PostgreSQL is optional for local or Docker deployments through:
+
+```text
+DATABASE_URL=postgresql+psycopg://careerscope:careerscope@localhost:5432/careerscope
+```
+
+Inside Docker Compose, use the `postgres` service host:
+
+```text
+DATABASE_URL=postgresql+psycopg://careerscope:careerscope@postgres:5432/careerscope
+```
 
 ## Deployment
 

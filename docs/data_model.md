@@ -50,6 +50,13 @@ Stores project-level evidence from portfolio links or CV entries.
 `JobPosting` stores normalized role data from sample files or future collectors. `JobSkill` stores
 extracted requirements for each posting, including skill importance and supporting requirement text.
 
+| Field | Notes |
+| --- | --- |
+| `field` | Deterministic career-field classification, such as Computer Science or Finance |
+| `job_family` | Deterministic role-family classification, such as Data Engineering or Supply Chain |
+| `remote_type` | Normalized Remote, Hybrid, On-site, or unknown value |
+| `seniority` | Normalized seniority label when available or classifiable |
+
 ## MatchResult
 
 Stores explainable candidate-to-job scoring.
@@ -57,6 +64,8 @@ Stores explainable candidate-to-job scoring.
 | Field | Notes |
 | --- | --- |
 | `overall_score` | Aggregate match score |
+| `explainable_score` | Deterministic matching score before semantic blending |
+| `semantic_similarity_score` | Optional TF-IDF or sentence-transformer text similarity score |
 | `required_skill_score` | Required-skill fit |
 | `preferred_skill_score` | Preferred-skill fit |
 | `seniority_score` | Seniority alignment |
@@ -69,5 +78,7 @@ Stores explainable candidate-to-job scoring.
 
 ## Storage Approach
 
-The MVP uses SQLite in `data/careerscope.db`. Raw uploaded or collected files should stay in
-`data/raw` during local development and should not be committed.
+The MVP defaults to SQLite in `data/careerscope.db`, controlled by `DATABASE_URL`. PostgreSQL is
+also supported by setting `DATABASE_URL` to a `postgresql+psycopg://...` connection string. Raw
+uploaded or collected files should stay in `data/raw` during local development and should not be
+committed.

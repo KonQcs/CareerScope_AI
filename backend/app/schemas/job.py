@@ -7,6 +7,8 @@ class JobPostingBase(BaseModel):
     external_id: str | None = Field(default=None, max_length=150)
     title: str = Field(min_length=2, max_length=180)
     company: str = Field(min_length=2, max_length=180)
+    field: str | None = Field(default=None, max_length=100)
+    job_family: str | None = Field(default=None, max_length=120)
     location: str | None = Field(default=None, max_length=180)
     country: str | None = Field(default=None, max_length=100)
     remote_type: str | None = Field(default=None, max_length=80)
